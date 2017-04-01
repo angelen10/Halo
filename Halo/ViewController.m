@@ -22,6 +22,10 @@ static NSString *const CellReuseIdentifier = @"CellReuseIdentifier";
 
 @implementation ViewController
 
+- (void)dealloc {
+    NSLog(@"%s", __func__);
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     
@@ -38,10 +42,11 @@ static NSString *const CellReuseIdentifier = @"CellReuseIdentifier";
 }
 
 - (void)refresh {
+    __weak typeof(self) weakSelf = self;
     self.viewModel = [[CYContactViewModel alloc] init];
     [[self.viewModel loadContacts] subscribeNext:^(id x) {
         NSLog(@"x -> %@", x);
-        [self.tableView reloadData];
+        [weakSelf.tableView reloadData];
     } error:^(NSError *error) {
         NSLog(@"error -> %@", error);
     } completed:^{
